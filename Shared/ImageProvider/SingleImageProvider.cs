@@ -55,8 +55,21 @@ namespace ClaudiaIDE.ImageProvider
 
         private void LoadImage()
         {
-            var fileUri = new Uri(_setting.BackgroundImageAbsolutePath, UriKind.RelativeOrAbsolute);
-            var fileInfo = new FileInfo(_setting.BackgroundImageAbsolutePath);
+            // Try to remplace the constant string $profileFolder by the directory of the current settings file.
+            // Works as usual if this string is present in the filename.
+            string filename = this._setting.BackgroundImageAbsolutePath;
+            if (this._setting.SolutionConfigFilePath != null)
+            {
+                int pos = filename.IndexOf("$profileFolder");
+                if (pos != -1)
+                {
+                    filename = filename.Remove(0, pos + 14);
+                    filename = Path.GetDirectoryName(this._setting.SolutionConfigFilePath) + filename;
+                }
+            }
+
+            var fileUri = new Uri(filename, UriKind.RelativeOrAbsolute);
+            var fileInfo = new FileInfo(filename);
 
             if (fileInfo.Exists)
             {
