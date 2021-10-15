@@ -5,6 +5,8 @@ This is a Visual Studio extension that lets you set a custom background image or
 
 ## What's new
 
+- Ver 3.1.0 Since a long time, ClaudiaIDE can have a configuration file stored in the directory of the open solution. In this new version, this configuration file can also use an image in the same directory by using a syntax like "BackgroundImageAbsolutePath": "$profileFolder\\ClaudiaImage.png", where '$profileFolder' will be replaced at run time by the solution path. Only available in single image mode. Available for VS 2019 and 2022 preview 5.
+
 - Ver 3.0.1 The ClaudiaIDE has been split into two Visual Studio versions, because the older version that needs to be resolved dependency of EnvDTE in Visual Studio 2022.
 - Ver 3.0.0 support Visual Studio 2022 preview 1. However unfortunately drop off support for Visual Studio 2017. If you want support VS2017 ver, you can try use [ver 2.2.19](https://github.com/buchizo/ClaudiaIDE/releases/tag/Release2.2.19). Now mainstream is support Visual Studio 2019 and 2022 only.
 - Ver 2.2.16 or later can support configuration per solution.
