@@ -39,7 +39,7 @@ namespace ClaudiaIDE
             }
         }
 
-        public event EventHandler NewImageAvaliable;
+        public event EventHandler NewImageAvailable;
 
         private ImageFiles GetImagesFromDirectory()
         {
@@ -119,7 +119,7 @@ namespace ClaudiaIDE
         {
             if (_imageFilesPath.MoveNext())
             {
-                NewImageAvaliable?.Invoke(this, EventArgs.Empty);
+                this.NewImageAvailable?.Invoke(this, EventArgs.Empty);
             }
             else
             {
@@ -129,7 +129,7 @@ namespace ClaudiaIDE
                     _imageFilesPath.Reset();
                     if (_imageFilesPath.MoveNext())
                     {
-                        NewImageAvaliable?.Invoke(this, EventArgs.Empty);
+                        this.NewImageAvailable?.Invoke(this, EventArgs.Empty);
                     }
                 }
             }

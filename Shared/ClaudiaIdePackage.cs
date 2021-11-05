@@ -41,7 +41,11 @@ namespace ClaudiaIDE
             {
                 Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
                 _mainWindow = (System.Windows.Window) s;
+                #if Dev32 
+                _settings = Setting.Initialize(this.GetService(typeof(DTE)) as EnvDTE80.DTE2);
+                #else
                 _settings = Setting.Initialize((DTE)this.GetService(typeof(DTE)));
+                #endif
                 _settings.OnChanged.AddEventHandler(ReloadSettings);
                 if (ProvidersHolder.Instance.Providers == null)
                 {
@@ -49,13 +53,14 @@ namespace ClaudiaIDE
                     {
                         new SingleImageEachProvider(_settings),
                         new SlideShowImageProvider(_settings),
-                        new SingleImageProvider(_settings)
+                        new SingleImageProvider(_settings),
+                        new TextImageProvider(_settings)
                     });
                 }
 
                 _imageProviders = ProvidersHolder.Instance.Providers;
                 _imageProvider = _imageProviders.FirstOrDefault(x => x.ProviderType == _settings.ImageBackgroundType);
-                _imageProviders.ForEach(x => x.NewImageAvaliable += InvokeChangeImage);
+                _imageProviders.ForEach(x => x.NewImageAvailable += InvokeChangeImage);
                 
                 NextImage.InitializeAsync(this)
                     .FileAndForget("claudiaide/nextimage/initializeasync");
@@ -65,7 +70,7 @@ namespace ClaudiaIDE
             };
             Application.Current.MainWindow.Closing += (s, e) =>
             {
-                _imageProviders.ForEach(x => x.NewImageAvaliable -= InvokeChangeImage);
+                _imageProviders.ForEach(x => x.NewImageAvailable -= InvokeChangeImage);
                 if (_settings != null)
                 {
                     _settings.OnChanged.RemoveEventHandler(ReloadSettings);
@@ -76,7 +81,11 @@ namespace ClaudiaIDE
                 try
                 {
                     await this.JoinableTaskFactory.SwitchToMainThreadAsync(true, cancellationToken);
+                    #if Dev32 
+                    _settings = Setting.Initialize((DTE)await this.GetServiceAsync(typeof(DTE)) as EnvDTE80.DTE2);
+                    #else
                     _settings = Setting.Initialize((DTE)await this.GetServiceAsync(typeof(DTE)));
+                    #endif
                     if (_settings == null) return;
                     _mainWindow = (System.Windows.Window)Application.Current.MainWindow;
                     _settings.OnChanged.AddEventHandler(ReloadSettings);
@@ -86,14 +95,15 @@ namespace ClaudiaIDE
                         {
                             new SingleImageEachProvider(_settings),
                             new SlideShowImageProvider(_settings),
-                            new SingleImageProvider(_settings)
+                            new SingleImageProvider(_settings),
+                            new TextImageProvider(_settings)
                         });
                     }
 
                     _imageProviders = ProvidersHolder.Instance.Providers;
                     _imageProvider =
                         _imageProviders.FirstOrDefault(x => x.ProviderType == _settings.ImageBackgroundType);
-                    _imageProviders.ForEach(x => x.NewImageAvaliable += InvokeChangeImage);
+                    _imageProviders.ForEach(x => x.NewImageAvailable += InvokeChangeImage);
 
                     await NextImage.InitializeAsync(this);
                     await PauseSlideshow.InitializeAsync(this);

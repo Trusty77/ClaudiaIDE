@@ -32,7 +32,7 @@ namespace ClaudiaIDE
             }
         }
 
-        public event EventHandler NewImageAvaliable;
+        public event EventHandler NewImageAvailable;
 
         private ImageFiles GetImagesFromDirectory()
         {

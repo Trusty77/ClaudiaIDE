@@ -31,7 +31,7 @@ namespace ClaudiaIDE.ImageProvider
         private void ReloadSettings(object sender, System.EventArgs e)
         {
             LoadImage();
-            NewImageAvaliable?.Invoke(this, EventArgs.Empty);
+            this.NewImageAvailable?.Invoke(this, EventArgs.Empty);
         }
 
 
@@ -92,7 +92,7 @@ namespace ClaudiaIDE.ImageProvider
             }
         }
 
-        public event EventHandler NewImageAvaliable;
+        public event EventHandler NewImageAvailable;
 
         public ImageBackgroundType ProviderType
         {

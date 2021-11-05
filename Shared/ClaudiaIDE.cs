@@ -1,3 +1,5 @@
+#pragma warning disable IDE0009 // Member access should be qualified.
+
 using System.Windows.Controls;
 using System.Windows.Threading;
 using ClaudiaIDE.Helpers;
@@ -25,6 +27,7 @@ namespace ClaudiaIDE
         private readonly IAdornmentLayer _adornmentLayer;
         private readonly Canvas _editorCanvas = new Canvas() { IsHitTestVisible = false };
         private readonly Setting _settings = Setting.Instance;
+        private Thickness margin;
         private IImageProvider _imageProvider;
         private bool _isMainWindow;
         private DependencyObject _wpfTextViewHost = null;
@@ -61,7 +64,7 @@ namespace ClaudiaIDE
                 };
                 _view.Closed += (s, e) =>
                 {
-                    _imageProviders.ForEach(x => x.NewImageAvaliable -= InvokeChangeImage);
+                    _imageProviders.ForEach(x => x.NewImageAvailable -= InvokeChangeImage);
                     if (_settings != null)
                     {
                         _settings.OnChanged.RemoveEventHandler(ReloadSettings);
@@ -74,7 +77,7 @@ namespace ClaudiaIDE
                 };
                 _settings.OnChanged.AddEventHandler(ReloadSettings);
 
-                _imageProviders.ForEach(x => x.NewImageAvaliable += InvokeChangeImage);
+                _imageProviders.ForEach(x => x.NewImageAvailable += InvokeChangeImage);
 
                 SetCanvasBackground();
                 ChangeImage();
@@ -150,6 +153,28 @@ namespace ClaudiaIDE
                     await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     try
                     {
+                        double x = 0, y = 0;
+                        switch (_settings.PositionHorizon)
+                        {
+                            case PositionH.Right:
+                                x = -margin.Right;
+                                break;
+                            case PositionH.Left:
+                                x = margin.Left;
+                                break;
+                        }
+
+                        switch (_settings.PositionVertical)
+                        {
+                            case PositionV.Top:
+                                y = margin.Top;
+                                break;
+                            case PositionV.Bottom:
+                                y = -margin.Bottom;
+                                break;
+                        }
+                        var trans = new TranslateTransform(x, y);
+
                         if (_isRootWindow)
                         {
                             var grid = new Grid()
@@ -165,7 +190,8 @@ namespace ClaudiaIDE
                                 AlignmentX = _settings.PositionHorizon.ConvertTo(),
                                 AlignmentY = _settings.PositionVertical.ConvertTo(),
                                 Opacity = opacity,
-                                Viewbox = new Rect(new Point(_settings.ViewBoxPointX, _settings.ViewBoxPointY), new Size(1, 1))
+                                Viewbox = new Rect(new Point(_settings.ViewBoxPointX, _settings.ViewBoxPointY), new Size(1, 1)),
+                                Transform = trans
                             };
                             grid.Background = nib;
                             Grid.SetRowSpan(grid, 3);
@@ -191,7 +217,8 @@ namespace ClaudiaIDE
                                 AlignmentX = _settings.PositionHorizon.ConvertTo(),
                                 AlignmentY = _settings.PositionVertical.ConvertTo(),
                                 Opacity = opacity,
-                                Viewbox = new Rect(new Point(_settings.ViewBoxPointX, _settings.ViewBoxPointY), new Size(1,1))
+                                Viewbox = new Rect(new Point(_settings.ViewBoxPointX, _settings.ViewBoxPointY), new Size(1, 1)),
+                                Transform = trans
                             };
                             _wpfTextViewHost.SetValue(Panel.BackgroundProperty, nib);
                         }
@@ -216,8 +243,8 @@ namespace ClaudiaIDE
             if (_wpfTextViewHost == null) return;
             var opacity = _settings.ExpandToIDE && _isMainWindow ? 0.0 : _settings.Opacity;
 
-            var refd = _wpfTextViewHost.GetType();
-            var prop = refd.GetProperty("Background");
+            Type refd = _wpfTextViewHost.GetType();
+            System.Reflection.PropertyInfo prop = refd.GetProperty("Background");
             var background = prop.GetValue(_wpfTextViewHost) as ImageBrush;
             if (background == null && _isRootWindow)
             {
@@ -364,14 +391,34 @@ namespace ClaudiaIDE
         {
             if (_wpfTextViewHost == null)
             {
+                var wpfTextView = FindUI(d, "Microsoft.VisualStudio.Text.Editor.Implementation.WpfTextView");
                 if (_isRootWindow)
                 {
-                    _wpfTextViewHost = FindUI(d, "Microsoft.VisualStudio.Text.Editor.Implementation.WpfTextView");
+                    _wpfTextViewHost = wpfTextView;
                 }
                 else
                 {
                     _wpfTextViewHost = FindUI(d, "Microsoft.VisualStudio.Editor.Implementation.WpfMultiViewHost");
                 }
+
+                if (wpfTextView != null && _wpfTextViewHost != null)
+                {
+                    var property = wpfTextView.GetType().GetProperty("DesiredSize");
+                    var desiredSize = (Size)property?.GetValue(wpfTextView);
+                    Double actualWidth = desiredSize.Width;
+                    Double actualHeight = desiredSize.Height;
+
+                    property = _wpfTextViewHost.GetType().GetProperty("ActualWidth");
+                    Double actualWidthHost = (Double)property?.GetValue(_wpfTextViewHost);
+
+                    property = _wpfTextViewHost.GetType().GetProperty("ActualHeight");
+                    Double actualHeightHost = (Double)property?.GetValue(_wpfTextViewHost);
+
+                    double deltaX = actualWidthHost - actualWidth;
+                    double deltaY = actualHeightHost - actualHeight;
+                    margin = new Thickness(deltaX / 2, deltaY / 2, deltaX / 2, deltaY / 2);
+                }
+
                 Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -443,3 +490,4 @@ namespace ClaudiaIDE
         }
     }
 }
+#pragma warning restore IDE0009 // Member access should be qualified.

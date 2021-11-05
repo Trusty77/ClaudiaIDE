@@ -64,6 +64,8 @@ namespace ClaudiaIDE.Settings
             var assemblylocation = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             BackgroundImagesDirectoryAbsolutePath = Path.Combine(string.IsNullOrEmpty(assemblylocation) ? "" : assemblylocation, DefaultBackgroundFolder);
             BackgroundImageAbsolutePath = Path.Combine(string.IsNullOrEmpty(assemblylocation) ? "" : assemblylocation, DefaultBackgroundImage);
+            BackgroundText = string.Empty;
+            TextSize = 108;
             Opacity = 0.35;
             PositionHorizon = PositionH.Right;
             PositionVertical = PositionV.Bottom;
@@ -85,6 +87,8 @@ namespace ClaudiaIDE.Settings
         }
 
         public ImageBackgroundType ImageBackgroundType { get; set; }
+        public string BackgroundText { get; set; }
+        public int TextSize { get; set; }
         public double Opacity { get; set; }
         public PositionV PositionVertical { get; set; }
         public PositionH PositionHorizon { get; set; }
@@ -147,6 +151,8 @@ namespace ClaudiaIDE.Settings
                     var solconf = Deserialize(solfile);
                     settings.BackgroundImageAbsolutePath = solconf.BackgroundImageAbsolutePath;
                     settings.BackgroundImagesDirectoryAbsolutePath = solconf.BackgroundImagesDirectoryAbsolutePath;
+                    settings.BackgroundText = solconf.BackgroundText;
+                    settings.TextSize = solconf.TextSize;
                     settings.ExpandToIDE = solconf.ExpandToIDE;
                     settings.Extensions = solconf.Extensions;
                     settings.ImageBackgroundType = solconf.ImageBackgroundType;
@@ -184,6 +190,8 @@ namespace ClaudiaIDE.Settings
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             BackgroundImagesDirectoryAbsolutePath = Setting.ToFullPath((string)props.Item("BackgroundImageDirectoryAbsolutePath").Value, DefaultBackgroundFolder);
             BackgroundImageAbsolutePath = Setting.ToFullPath((string)props.Item("BackgroundImageAbsolutePath").Value, DefaultBackgroundImage);
+            BackgroundText = (string)props.Item("BackgroundText").Value;
+            TextSize = (int)props.Item("TextSize").Value;
             Opacity = (double)props.Item("Opacity").Value;
             PositionHorizon = (PositionH)props.Item("PositionHorizon").Value;
             PositionVertical = (PositionV)props.Item("PositionVertical").Value;
@@ -223,6 +231,8 @@ namespace ClaudiaIDE.Settings
                 var solconf = Deserialize(solutionConfigFile);
                 BackgroundImageAbsolutePath = solconf.BackgroundImageAbsolutePath;
                 BackgroundImagesDirectoryAbsolutePath = solconf.BackgroundImagesDirectoryAbsolutePath;
+                BackgroundText = solconf.BackgroundText;
+                TextSize = solconf.TextSize;
                 ExpandToIDE = solconf.ExpandToIDE;
                 Extensions = solconf.Extensions;
                 ImageBackgroundType = solconf.ImageBackgroundType;
@@ -333,7 +343,8 @@ namespace ClaudiaIDE.Settings
     {
         Single = 0,
         Slideshow = 1,
-        SingleEach = 2
+        SingleEach = 2,
+        TextImage = 3
     }
 
     [ComVisible(true)]

@@ -249,4 +249,16 @@
   <data name="IsLimitToMainlyEditorWindowDes" xml:space="preserve">
     <value>If this option is True, background image limit to only editor window.</value>
   </data>
+	<data name="TextSize" xml:space="preserve">
+    <value>Text Font Size</value>
+  </data>
+	<data name="TextSizeDes" xml:space="preserve">
+    <value>Font size for the Text.</value>
+  </data>
+	<data name="ColorText" xml:space="preserve">
+    <value>Text Color</value>
+  </data>
+	<data name="TextColorDes" xml:space="preserve">
+    <value>Foreground color for the Text.</value>
+  </data>
 </root>

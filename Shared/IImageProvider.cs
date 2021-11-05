@@ -8,7 +8,7 @@ namespace ClaudiaIDE
     public interface IImageProvider
     {
         BitmapSource GetBitmap();
-        event EventHandler NewImageAvaliable;
+        event EventHandler NewImageAvailable;
         ImageBackgroundType ProviderType { get; }
         string SolutionConfigFile { get; }
     }

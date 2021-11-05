@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Utils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IImageProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ImageProvider\SingleImageEachProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ImageProvider\TextImageProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ImageProvider\SingleImageProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ImageProvider\SlideShowImageProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Localized\LocalManager.cs" />

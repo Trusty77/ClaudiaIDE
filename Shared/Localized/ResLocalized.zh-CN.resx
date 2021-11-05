@@ -249,4 +249,22 @@
   <data name="IsLimitToMainlyEditorWindowDes" xml:space="preserve">
     <value>如果此选项为True，则背景图片仅限于编辑器窗口。</value>
   </data>
+	<data name="BackgroundText" xml:space="preserve">
+    <value>Background text</value>
+  </data>
+	<data name="BackgroundTextDes" xml:space="preserve">
+    <value>Text to draw on the background.</value>
+  </data>
+	<data name="TextSize" xml:space="preserve">
+    <value>Text Font Size</value>
+  </data>
+	<data name="TextSizeDes" xml:space="preserve">
+    <value>Font size for the Text.</value>
+  </data>
+	<data name="ColorText" xml:space="preserve">
+    <value>Text Color</value>
+  </data>
+	<data name="TextColorDes" xml:space="preserve">
+    <value>Foreground color for the Text.</value>
+  </data>
 </root>
